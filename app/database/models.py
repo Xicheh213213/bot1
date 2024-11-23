@@ -5,8 +5,7 @@ from sqlalchemy.orm import DeclarativeBase,Mapped,mapped_column
 from dotenv import load_dotenv
 
 load_dotenv()
-engine = create_async_engine(url = os.getenv('SQLALCHEMY_URL'),
-                             echo = True)
+engine = create_async_engine(url = os.getenv('SQLALCHEMY_URL'))
 
 async_session = async_sessionmaker(engine)
 
