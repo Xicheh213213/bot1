@@ -3,6 +3,8 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart,Command
 from app import keyboards as kb
 from app.database import requests as rq
+from aiogram.fsm.context import FSMContext
+from app.state import Itemname
 
 user = Router()
 
@@ -32,3 +34,14 @@ async def category_subcategory(callback:CallbackQuery):
     item = await rq.get_item(callback.data.split('_')[1])
     await callback.answer('Вы выбрали товар')
     await callback.message.edit_text(f'Название: {item.name}\nОписание: {item.descripion}\nЦена: {item.price}',reply_markup= await kb.item_buttons(callback.data.split('_')[1]))
+
+@user.message(F.text == 'Поиск товара')
+async def cmd_find(message:Message,state:FSMContext):
+    await state.set_state(Itemname.itemname)
+    await message.answer('Type a name of item')
+
+@user.message(Itemname.itemname)
+async def itemname(message:Message,state:FSMContext):
+    item= await rq.get_nameitem(message.text)
+    await message.answer(f'Название: {item.name}\nОписание: {item.descripion}\nЦена: {item.price}')
+    await state.clear()

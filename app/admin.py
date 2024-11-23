@@ -18,7 +18,7 @@ class AdminProtect(Filter):
 async def a_panel(message:Message):
     await message.answer('This panel of admin')
 
-@admin.message(Command('newl'))
+@admin.message(AdminProtect(),Command('newl'))
 async def cmd_newl(message:Message,state:FSMContext):
     await state.set_state(NewLetters.message)
     await message.answer('Type a message')
